@@ -52,9 +52,15 @@ const createOneRecipe = async (req, res, next) => {
 const updateOneRecipe = async (req, res, next) => {
   const { id } = req.params;
   const formData = JSON.parse(JSON.stringify(req.body))
-  const { nom_recette, instructions_recette } = formData;
+  const { temps_preparation, nb_personnes, nom_recette, instructions_recette } = formData;
   const image_recette = req.file.filename;
   const newRecipe = {};
+  if (temps_preparation) {
+    newRecipe.temps_preparation = temps_preparation;
+  }
+  if (nb_personnes) {
+    newRecipe.nb_personnes = nb_personnes;
+  }
   if (nom_recette) {
     newRecipe.nom_recette = nom_recette;
   }
