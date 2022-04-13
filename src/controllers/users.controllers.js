@@ -14,13 +14,13 @@ const findManyUsers = async (req, res) => {
 }
 
 const findOneUserById = async (req, res) => {
-  const { id } = req.params;
+  const id  = req.params.id ? req.params.id : req.id;
   const statusCode = res.method === "POST" ? "201" : "200";
   if (Number.isNaN(parseInt(id, 10))) {
     res.status(400).send('Vous devez renseigner une ID valide');
   } 
     try {
-      const [results] = await User.findOneById(id);
+      const [results] = await User.findOne(id);
       if (results.length === 0) {
       res.status(400).send(`L'utilisateur avec l'id ${id} n'a pas été trouvé!`);
     } else {
@@ -32,16 +32,15 @@ const findOneUserById = async (req, res) => {
 }
 
 const createOneUser = async (req, res, next) => {
-  const { pseudo, email, password} = req.body;
+  const { pseudo, email, password } = req.body;
   const hashedPassword = await User.hashPassword(password);
   try {
     const [result] = await User.createOne({pseudo, email, password: hashedPassword});
-    if (result.affectedRows === 0) {
-      res.status(400).send('La requête a échouée');
-    } else {
-     next();
-    }
+    console.log(result)
+    req.id = result.insertId;
+     next(); 
   } catch (err) {
+    console.log('err', err)
   res.status(500).send(err.message);
   }
 }
@@ -86,10 +85,33 @@ const deleteOneUser = async (req, res) => {
   }
 }
 
+const verifyCredentials = async (req, res, next) => {
+  const { email, password } = req.body;
+  console.log(req.body);
+  // /!\ mise en place de la connexion avec le pseudo à mettre en place /!\
+  const [result] = await User.findOneByEmail(email);
+  console.log("result", result);
+  // Check de si l'email existe et s'il est trouvé par son id dans la BDD
+  if (result.length === 0) {
+    res.status(401).send("Email or Password wrong");
+  } else {
+    const validPassword = await User.verifyPassword(password, result[0].password);
+    if (validPassword) {
+      delete result[0].password;
+      const [user] = result;
+      req.user = user;
+      next();
+    } else {
+      res.status(400).send("Email or Password wrong");
+    }
+  }
+};
+
 module.exports = {
   findManyUsers,
   findOneUserById,
   createOneUser,
   updateOneUser,
   deleteOneUser,
+  verifyCredentials,
 }
