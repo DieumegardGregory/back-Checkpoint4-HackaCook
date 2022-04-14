@@ -33,6 +33,11 @@ class User {
     return results.length > 0;
   }
 
+  static findOneByEmail(email) {
+    const sql = "SELECT * FROM users WHERE email=?";
+    return connection.promise().query(sql, [email]);
+  }
+
   static async hashPassword(password) {
     const hashedPassword = await argon2.hash(password);
     return hashedPassword;

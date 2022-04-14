@@ -4,7 +4,7 @@ const fs = require("fs");
 const postImageObj = (req, res, next) => {
   const storage = multer.diskStorage({
     destination: (_, file, cb) => {
-      cb(null, 'src/images');
+      cb(null, 'images');
     },
     filename: (_, file, cb) => {
       cb(null, `${Date.now()}-${file.originalname}`);

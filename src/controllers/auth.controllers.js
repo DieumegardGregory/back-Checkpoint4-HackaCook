@@ -2,7 +2,7 @@ require('dotenv').config();
 const jwt = require("jsonwebtoken");
 
 const createToken = (req, res) => {
-  const id = req.userId;
+  const id = req.user.id_user;
   const token = jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "15m" });
   const refreshToken = jwt.sign({ id }, process.env.REFRESH_JWT, { expiresIn: "1h" });
   res
@@ -17,9 +17,10 @@ const verifyToken = async (req, res, next) => {
   if (token) {
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
+        res.clearCookie("token");
         res.sendStatus(403);
       }
-      req.userId = decoded.id;
+      req.user = decoded;
       return next();
     });
   }
