@@ -87,10 +87,8 @@ const deleteOneUser = async (req, res) => {
 
 const verifyCredentials = async (req, res, next) => {
   const { email, password } = req.body;
-  console.log(req.body);
   // /!\ mise en place de la connexion avec le pseudo à mettre en place /!\
   const [result] = await User.findOneByEmail(email);
-  console.log("result", result);
   // Check de si l'email existe et s'il est trouvé par son id dans la BDD
   if (result.length === 0) {
     res.status(401).send("Email or Password wrong");

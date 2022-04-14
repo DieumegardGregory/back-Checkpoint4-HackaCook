@@ -1,22 +1,23 @@
 const { Recipe } = require('../models');
 
 const findManyRecipes = async (req, res) => {
-  // const { title, genre } = req.query;
-  // let filters = { title, genre };
+  const { recipeTime } = req.query;
+  let filter = { recipeTime };
   try {
-    const [results] = await Recipe.findMany();
+    const [results] = await Recipe.findMany(filter);
     if (results.length === 0) {
       res.status(200).send('Aucune recette disponible');
     } else {
       res.status(200).json(results)
     }
   } catch(err) {
+    console.log(err)
     res.status(500).send(err.message);
   }
 }
 
 const findOneRecipeById = async (req, res) => {
-  const { id } = req.params;
+  const id = req.params.id ? req.params.id : req.id;
   const statusCode = res.method === "POST" ? "201" : "200";
   if (Number.isNaN(parseInt(id, 10))) {
     res.status(400).send('Vous devez renseigner une ID valide');
@@ -35,13 +36,15 @@ const findOneRecipeById = async (req, res) => {
 
 const createOneRecipe = async (req, res, next) => {
   const formData = JSON.parse(JSON.stringify(req.body))
-  const { nom_recette, instructions_recette } = formData;
+  const { temps_preparation, nb_personnes, nom_recette, instructions_recette } = formData;
+  console.log(formData)
   const image_recette = req.file.filename;
   try {
-    const [result] = await Recipe.createOne({ nom_recette, image_recette, instructions_recette });
+    const [result] = await Recipe.createOne({ temps_preparation, nb_personnes, nom_recette, image_recette, instructions_recette });
     if (result.affectedRows === 0) {
       res.status(400).send('La requête a échouée');
     } else {
+      req.id = result.insertId;
       next();
     }
   } catch (err) {
@@ -53,6 +56,7 @@ const updateOneRecipe = async (req, res, next) => {
   const { id } = req.params;
   const formData = JSON.parse(JSON.stringify(req.body))
   const { temps_preparation, nb_personnes, nom_recette, instructions_recette } = formData;
+  console.log(formData)
   const image_recette = req.file.filename;
   const newRecipe = {};
   if (temps_preparation) {
@@ -125,6 +129,20 @@ const stopOneFavorite = async (req, res) => {
   }
 }
 
+const getAllFavorites = async (_req, res) => {
+  try {
+    const [results] = await Recipe.findFavorites();
+    console.log(results)
+    if (results.length === 0) {
+      res.status(200).json(results);
+    } else {
+      res.status(200).json(results);
+    }
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+}
+
 
 module.exports = {
   findManyRecipes,
@@ -134,4 +152,5 @@ module.exports = {
   deleteOneRecipe,
   makeOneFavorite, 
   stopOneFavorite,
+  getAllFavorites,
 }
