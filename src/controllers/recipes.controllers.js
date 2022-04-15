@@ -11,7 +11,6 @@ const findManyRecipes = async (req, res) => {
       res.status(200).json(results)
     }
   } catch(err) {
-    console.log(err)
     res.status(500).send(err.message);
   }
 }
@@ -37,7 +36,6 @@ const findOneRecipeById = async (req, res) => {
 const createOneRecipe = async (req, res, next) => {
   const formData = JSON.parse(JSON.stringify(req.body))
   const { temps_preparation, nb_personnes, nom_recette, instructions_recette } = formData;
-  console.log(formData)
   const image_recette = req.file.filename;
   try {
     const [result] = await Recipe.createOne({ temps_preparation, nb_personnes, nom_recette, image_recette, instructions_recette });
@@ -56,7 +54,6 @@ const updateOneRecipe = async (req, res, next) => {
   const { id } = req.params;
   const formData = JSON.parse(JSON.stringify(req.body))
   const { temps_preparation, nb_personnes, nom_recette, instructions_recette } = formData;
-  console.log(formData)
   const image_recette = req.file.filename;
   const newRecipe = {};
   if (temps_preparation) {
@@ -102,10 +99,10 @@ const deleteOneRecipe = async (req, res) => {
 }
 
 const makeOneFavorite = async (req, res) => {
-  const { userId, recipeId } = req.body;
+  const { recette_id, user_id } = req.body;
   try {
-    const [result] = await Recipe.makeFavorite(userId, recipeId);
-    if (result.affectedRows > 0) {
+    const [result] = await Recipe.makeFavorite({user_id, recette_id});
+    if (result.affectedRows === 0) {
       res.status(404).send('La requête a échouée');
     } else {
       res.status(201).send('Favori enregistré!');
