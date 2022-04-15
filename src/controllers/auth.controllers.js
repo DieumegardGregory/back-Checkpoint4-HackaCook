@@ -7,7 +7,7 @@ const createToken = (req, res) => {
   const refreshToken = jwt.sign({ id }, process.env.REFRESH_JWT, { expiresIn: "1h" });
   res
     .status(200)
-    .cookie("token", token, { httpOnly: true, maxAge: 3600000 })
+    .cookie("token", token, { httpOnly: true, maxAge: 3600000, sameSite: "lax" })
     .cookie("refresh-token", refreshToken, { httpOnly: true, maxAge: 3600000 })
     .json({ id });
 };
@@ -19,12 +19,14 @@ const verifyToken = async (req, res, next) => {
       if (err) {
         res.clearCookie("token");
         res.sendStatus(403);
+      } else {
+        req.user = decoded;
+        next();
       }
-      req.user = decoded;
-      return next();
     });
+  } else {
+     res.status(403).send("Unauthorized");
   }
-  return res.status(403).send("Unauthorized");
 };
 
 const refreshToken = (req, res) => {

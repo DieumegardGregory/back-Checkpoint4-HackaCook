@@ -31,9 +31,9 @@ class Recipe {
     return connection.promise().query(sql, [id]);
   }
 
-  static makeFavorite(userId, recipeId) {
+  static makeFavorite(favori) {
     const sql = "INSERT INTO favoris SET ?";
-    return connection.promise().query(sql, [userId, recipeId]);
+    return connection.promise().query(sql, [favori]);
   }
 
   static stopFavorite(userId, recipeId) {
