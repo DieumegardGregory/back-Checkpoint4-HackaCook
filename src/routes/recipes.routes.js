@@ -3,7 +3,7 @@ const recipesRouter = require('express').Router();
 const { recipesControllers, multerControllers, authControllers } = require('../controllers');
 
 recipesRouter.get('/', recipesControllers.findManyRecipes);
-recipesRouter.get('/favorites', recipesControllers.getAllFavorites);
+recipesRouter.get('/favorites/:id', recipesControllers.getAllFavorites);
 recipesRouter.get('/:id', recipesControllers.findOneRecipeById);
 recipesRouter.post('/', multerControllers.postImageObj, recipesControllers.createOneRecipe, recipesControllers.findOneRecipeById);
 recipesRouter.put('/:id', recipesControllers.updateOneRecipe , recipesControllers.findOneRecipeById);

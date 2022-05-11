@@ -116,7 +116,7 @@ const stopOneFavorite = async (req, res) => {
   const { userId, recipeId } = req.params;
   try {
     const [result] = await Recipe.stopFavorite(userId, recipeId);
-    if (result.affectedRows > 0) {
+    if (result.affectedRows === 0) {
       res.status(404).send('La requête a échouée');
     } else {
       res.status(204).send('Favori supprimé!');
@@ -126,9 +126,10 @@ const stopOneFavorite = async (req, res) => {
   }
 }
 
-const getAllFavorites = async (_req, res) => {
+const getAllFavorites = async (req, res) => {
+  const { id } = req.params;
   try {
-    const [results] = await Recipe.findFavorites();
+    const [results] = await Recipe.findUserFavorites(id);
     console.log(results)
     if (results.length === 0) {
       res.status(200).json(results);
