@@ -1,6 +1,6 @@
 const { User } = require('../models');
 
-const findManyUsers = async (req, res) => {
+const findManyUsers = async (_req, res) => {
   try {
     const [results] = await User.findMany();
     if (results.length === 0) {
