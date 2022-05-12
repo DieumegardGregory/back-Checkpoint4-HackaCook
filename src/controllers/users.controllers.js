@@ -1,6 +1,6 @@
 const { User } = require('../models');
 
-const findManyUsers = async (req, res) => {
+const findManyUsers = async (_req, res) => {
   try {
     const [results] = await User.findMany();
     if (results.length === 0) {
@@ -15,7 +15,7 @@ const findManyUsers = async (req, res) => {
 
 const findOneUserById = async (req, res) => {
   const id  = req.params.id ? req.params.id : req.id;
-  const statusCode = res.method === "POST" ? "201" : "200";
+  const statusCode = res.method === "POST" ? 201 : 200;
   if (Number.isNaN(parseInt(id, 10))) {
     res.status(400).send('Vous devez renseigner une ID valide');
   } 

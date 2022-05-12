@@ -41,9 +41,9 @@ class Recipe {
     return connection.promise().query(sql, [userId, recipeId]);
   }
 
-  static findFavorites() {
-    const sql = "SELECT * FROM recettes AS r JOIN favoris AS f ON f.recette_id = r.id_recette JOIN users AS u ON u.id_user = f.user_id";
-    return connection.promise().query(sql);
+  static findUserFavorites(id) {
+    const sql = "SELECT nom_recette, id_recette FROM recettes AS r JOIN favoris AS f ON f.recette_id = r.id_recette JOIN users AS u ON u.id_user = f.user_id WHERE u.id_user= ?";
+    return connection.promise().query(sql, [id]);
   }
 
 } 
