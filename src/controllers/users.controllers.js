@@ -36,11 +36,9 @@ const createOneUser = async (req, res, next) => {
   const hashedPassword = await User.hashPassword(password);
   try {
     const [result] = await User.createOne({pseudo, email, password: hashedPassword});
-    console.log(result)
     req.id = result.insertId;
      next(); 
   } catch (err) {
-    console.log('err', err)
   res.status(500).send(err.message);
   }
 }

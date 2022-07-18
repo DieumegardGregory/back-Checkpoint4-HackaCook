@@ -17,7 +17,7 @@ const findManyRecipes = async (req, res) => {
 
 const findOneRecipeById = async (req, res) => {
   const id = req.params.id ? req.params.id : req.id;
-  const statusCode = res.method === "POST" ? "201" : "200";
+  const statusCode = res.method === "POST" ? 201 : 200;
   if (Number.isNaN(parseInt(id, 10))) {
     res.status(400).send('Vous devez renseigner une ID valide');
   } 
@@ -130,7 +130,6 @@ const getAllFavorites = async (req, res) => {
   const { id } = req.params;
   try {
     const [results] = await Recipe.findUserFavorites(id);
-    console.log(results)
     if (results.length === 0) {
       res.status(200).json(results);
     } else {
