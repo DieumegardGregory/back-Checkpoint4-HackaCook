@@ -45,7 +45,6 @@ const refreshToken = (req, res) => {
   }
   //   Je prend la date actuelle de la requete en for;at seconde ?
   const nowUnixSeconds = Math.round(Number(new Date()) / 1000);
-  console.log("seconds ?", nowUnixSeconds);
   //   Si je suis à plus de 2 min déxpiration de mon token, je ne fais rien
   if (payload.exp - nowUnixSeconds < 120) {
     return res.status(500).json({ token });
