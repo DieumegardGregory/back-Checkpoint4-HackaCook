@@ -2,14 +2,14 @@
 require("dotenv").config();
 const mysql = require("mysql2");
 
-let config = {
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME,
-  multipleStatements: true,
-};
+// let config = {
+//   host: process.env.DB_HOST,
+//   port: process.env.DB_PORT,
+//   user: process.env.DB_USER,
+//   password: process.env.DB_PASS,
+//   database: process.env.DB_NAME,
+//   multipleStatements: true,
+// };
 
 if (process.env.NODE_ENV === "test") {
   config = {
@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === "test") {
   };
 }
 
-const connection = mysql.createConnection(config);
+const connection = mysql.createConnection(process.env.CLEARDB_DATABASE_URL);
 
 const query = (...args) => {
   return new Promise((resolve, reject) => {
