@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === "test") {
   };
 }
 
-const connection = mysql.createConnection(process.env.CLEARDB_DATABASE_URL);
+const connection = mysql.createPool(process.env.CLEARDB_DATABASE_URL);
 
 const query = (...args) => {
   return new Promise((resolve, reject) => {
